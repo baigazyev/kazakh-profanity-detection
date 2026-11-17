@@ -1,0 +1,25 @@
+{
+  "seed": 42,
+  "data": {
+    "source_csv": "data/source/kazakh_profanity_share.csv",
+    "overrides_csv": "data/label_overrides.csv",
+    "kazsandra_base_url": "https://raw.githubusercontent.com/IS2AI/KazSAnDRA/main/dataset/",
+    "kazsandra_files": ["01_pc_train_ib.zip", "04_pc_valid.zip", "05_pc_test.zip"],
+    "market_negative_reviews": 400,
+    "market_positive_reviews": 150,
+    "market_lookalike_reviews": 150,
+    "test_fraction": 0.15,
+    "val_fraction": 0.15,
+    "near_duplicate_cosine": 0.85
+  },
+  "model": {
+    "analyzer": ["char_wb", "char"],
+    "ngram_range": [[1, 4], [2, 5], [2, 6]],
+    "C": [0.3, 1.0, 3.0, 10.0, 30.0, 100.0],
+    "min_df": 2,
+    "sublinear_tf": true,
+    "class_weight": "balanced",
+    "max_iter": 2000,
+    "threshold_grid": [0.05, 0.95, 0.01]
+  }
+}

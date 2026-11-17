@@ -1,0 +1,21 @@
+{
+  "n_test": 537,
+  "n_profanity": 162,
+  "n_clean": 375,
+  "threshold": 0.32,
+  "precision_profanity": 0.8603,
+  "recall_profanity": 0.9506,
+  "f1_profanity": 0.9032,
+  "average_precision": 0.9699,
+  "accuracy": 0.9385,
+  "confusion_matrix": {
+    "tn": 350,
+    "fp": 25,
+    "fn": 8,
+    "tp": 154
+  },
+  "market_reviews": {
+    "n": 85,
+    "false_positives": 2
+  }
+}

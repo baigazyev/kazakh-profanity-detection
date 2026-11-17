@@ -1,0 +1,24 @@
+{
+  "model": "TF-IDF character n-grams + logistic regression",
+  "analyzer": "char_wb",
+  "ngram_range": [
+    1,
+    4
+  ],
+  "C": 30.0,
+  "min_df": 2,
+  "sublinear_tf": true,
+  "class_weight": "balanced",
+  "threshold": 0.32,
+  "seed": 42,
+  "selected_by": "highest validation F1 (class 1) after tuning the threshold on validation",
+  "validation": {
+    "val_f1": 0.9419,
+    "val_precision": 0.9277,
+    "val_recall": 0.9565,
+    "val_ap": 0.9805
+  },
+  "train_size": 2681,
+  "vocabulary_size": 16300,
+  "fit_seconds": 0.32
+}
