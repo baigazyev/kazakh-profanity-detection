@@ -23,7 +23,7 @@ Open `notebooks/Kazakh_Profanity_Colab.ipynb` in Colab (File → Open notebook �
 
 ### Local
 ```bash
-git clone https://github.com/<your-github-username>/kazakh-profanity-detection.git
+git clone https://github.com/baigazyev/kazakh-profanity-detection.git
 cd kazakh-profanity-detection
 python -m venv .venv && source .venv/bin/activate      # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
@@ -77,7 +77,7 @@ notebooks/Kazakh_Profanity_Colab.ipynb
 ### Sources
 | Part | Rows | Where it comes from |
 |---|---|---|
-| Labelled comments | 3,055 | `kazakh_profanity_share.csv`: Kazakh comments from **KazSAnDRA** (ISSAI, [paper](https://arxiv.org/abs/2403.19335), [repository](https://github.com/IS2AI/KazSAnDRA)) with binary profanity labels. *[Fill in: who gave you this file — instructor / course materials / other.]* I re-checked and corrected its labels (below). |
+| Labelled comments | 3,055 | `kazakh_profanity_share.csv`: Kazakh comments from **KazSAnDRA** (ISSAI, [paper](https://arxiv.org/abs/2403.19335), [repository](https://github.com/IS2AI/KazSAnDRA)) with binary profanity labels. This file was the labelled sample I started the project with. Its labels were re-checked and corrected (below). |
 | Product-review negatives | 699 | Market-domain reviews (online marketplaces) from KazSAnDRA, downloaded by `prepare_data.py`: 399 negative reviews, 150 positive reviews, 150 reviews with look-alike words (`есік`, `бесік`, `көтер-`, `шешім`, `қатыным`…). All label 0. |
 | **Total** | **3,754** | 2,624 clean (70%) · 1,130 profanity (30%) · **0 synthetic examples** |
 
@@ -102,9 +102,9 @@ notebooks/Kazakh_Profanity_Colab.ipynb
 **Ambiguous cases** (abbreviations that might be profane, joke names, `шешесінің` in third person, a bare `ам` that may be a typo) were labelled by the closest rule and marked `uncertain = 1` in `data/label_overrides.csv` (23 rows), so they can be reviewed or excluded.
 
 ### How the labels were checked and revised
-The original file labels a broader notion than this task: it marked many **insults without profanity** as 1 (most comments with the insult `мал`, and `есек`, `ешак`, `тупой`). I therefore:
+The original file labels a broader notion than this task: it marked many **insults without profanity** as 1 (most comments with the insult `мал`, and `есек`, `ешак`, `тупой`). The labels were therefore audited (the audit was done with Claude, see Section 6, and the rules were agreed by me):
 1. wrote a broad word list (`src/lexicon.py`, Kazakh + Russian roots, spelling variants, masks) to find conflicts;
-2. read by hand all 513 comments labelled 1 **without** a word-list hit and all 24 comments labelled 0 **with** a hit;
+2. reviewed one by one all 513 comments labelled 1 **without** a word-list hit and all 24 comments labelled 0 **with** a hit;
 3. changed **413 labels**: 409 from 1 → 0 (266 insults without profanity, 143 not profane on review) and 4 from 0 → 1 (missed profanity). Every change and its reason is in `data/label_overrides.csv`.
 
 The word list was used only to find candidates for manual review; the model never sees it.
@@ -193,12 +193,18 @@ For review moderation I would put the model in front of a human: auto-flag above
 ## 5. Limitations
 * **Domain:** positives are almost all app/game reviews; real product-review profanity is rare in public data (marketplaces moderate it). Performance on unmoderated product comments may be lower.
 * **Class balance:** 30% profanity here is much higher than in real reviews, so real-world precision will be **lower** than 0.86 at the same threshold; the threshold should be re-chosen on data with the real prevalence.
-* **Labels** were revised by one person (me) using written rules; 23 borderline cases are marked; at least one test label is wrong (error 5).
+* **Labels** were revised with AI assistance using written rules, without a second human annotator; 23 borderline cases are marked; at least one test label is wrong (error 5).
 * The model sees only characters: no meaning, no context, no emojis. It cannot tell an insult from a joke between friends.
 
 ## 6. AI assistance and my contributions
-I used **Claude (Anthropic)** to help write the code, the label audit word list, first-pass label suggestions and this README draft.
-*My own work: [fill in honestly — e.g. choosing the labelling rules, reviewing the label changes and the uncertain cases, running the notebook in Colab, checking the results and the error analysis].*
+I used **Claude (Anthropic)** as an assistant. Claude wrote most of the code, the word list for the label audit, the proposed label changes and the first draft of this README.
+
+My own work:
+* I chose the task data (`kazakh_profanity_share.csv`) and planned the project against the assignment requirements together with Claude.
+* I discussed and accepted the labelling rule: profanity (obscene words) is 1, insults without obscene words such as `мал` or `есек` are 0, because the task is profanity detection and not insult detection.
+* I ran the whole notebook in Google Colab: installed the dependencies, checked that the saved model gives the same predictions, tested my own Kazakh sentences with the input cell, and re-ran the full pipeline (`prepare_data.py`, `train.py`, `evaluate.py`).
+* I studied how the model makes a decision (character n-grams, their weights, the 0.32 threshold) and the false positives and false negatives in the error analysis.
+* I published the repository on GitHub and checked that it can be cloned and run.
 
 ## References
 * Yeshpanov R., Varol H. A. *KazSAnDRA: Kazakh Sentiment Analysis Dataset of Reviews and Attitudes.* 2024. [arXiv:2403.19335](https://arxiv.org/abs/2403.19335)
